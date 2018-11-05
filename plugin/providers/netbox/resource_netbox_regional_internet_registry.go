@@ -1,8 +1,9 @@
 package netbox
 
 import (
-	"log"
 	"strconv"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/digitalocean/go-netbox/netbox/client/ipam"
 	"github.com/digitalocean/go-netbox/netbox/models"
@@ -54,12 +55,12 @@ func resourceNetboxRegionalInternetRegistryCreate(d *schema.ResourceData, meta i
 		},
 	)
 
-	log.Printf("Executing IPAMRirsCreate against Netbox: %v", parm)
+	log.Debugf("Executing IPAMRirsCreate against Netbox: %v", parm)
 
 	out, err := netboxClient.IPAM.IPAMRirsCreate(parm, nil)
 
 	if err != nil {
-		log.Printf("Failed to execute IPAMRirsCreate: %v", err)
+		log.Debugf("Failed to execute IPAMRirsCreate: %v", err)
 
 		return err
 	}
@@ -67,7 +68,7 @@ func resourceNetboxRegionalInternetRegistryCreate(d *schema.ResourceData, meta i
 	// TODO Probably a better way to parse this ID
 	d.SetId(strconv.Itoa(int(out.Payload.ID)))
 
-	log.Printf("Done Executing IPAMRirsCreate: %v", out)
+	log.Debugf("Done Executing IPAMRirsCreate: %v", out)
 
 	return nil
 }
@@ -79,7 +80,7 @@ func resourceNetboxRegionalInternetRegistryUpdate(d *schema.ResourceData, meta i
 	id, err := strconv.Atoi(d.Id())
 
 	if err != nil {
-		log.Printf("Error parsing RIR ID %v = %v", d.Id(), err)
+		log.Debugf("Error parsing RIR ID %v = %v", d.Id(), err)
 		return err
 	}
 
@@ -97,17 +98,17 @@ func resourceNetboxRegionalInternetRegistryUpdate(d *schema.ResourceData, meta i
 			},
 		)
 
-	log.Printf("Executing IPAMRirsUpdate against Netbox: %v", parm)
+	log.Debugf("Executing IPAMRirsUpdate against Netbox: %v", parm)
 
 	out, err := netboxClient.IPAM.IPAMRirsUpdate(parm, nil)
 
 	if err != nil {
-		log.Printf("Failed to execute IPAMRirsUpdate: %v", err)
+		log.Debugf("Failed to execute IPAMRirsUpdate: %v", err)
 
 		return err
 	}
 
-	log.Printf("Done Executing IPAMRirsUpdate: %v", out)
+	log.Debugf("Done Executing IPAMRirsUpdate: %v", out)
 
 	return nil
 }
@@ -119,7 +120,7 @@ func resourceNetboxRegionalInternetRegistryRead(d *schema.ResourceData, meta int
 	id, err := strconv.Atoi(d.Id())
 
 	if err != nil {
-		log.Printf("Error parsing RIR ID %v = %v", d.Id(), err)
+		log.Debugf("Error parsing RIR ID %v = %v", d.Id(), err)
 		return err
 	}
 
@@ -128,7 +129,7 @@ func resourceNetboxRegionalInternetRegistryRead(d *schema.ResourceData, meta int
 	readRirResult, err := netboxClient.IPAM.IPAMRirsRead(readParams, nil)
 
 	if err != nil {
-		log.Printf("Error fetching RIR ID # %d from Netbox = %v", id, err)
+		log.Debugf("Error fetching RIR ID # %d from Netbox = %v", id, err)
 		return err
 	}
 
@@ -141,12 +142,12 @@ func resourceNetboxRegionalInternetRegistryRead(d *schema.ResourceData, meta int
 
 // resourceNetboxRegionalInternetRegistryDelete deletes an existing RIR by ID.
 func resourceNetboxRegionalInternetRegistryDelete(d *schema.ResourceData, meta interface{}) error {
-	log.Printf("[DEBUG] Deleting RIR: %v\n", d)
+	log.Debugf("Deleting RIR: %v\n", d)
 
 	id, err := strconv.Atoi(d.Id())
 
 	if err != nil {
-		log.Printf("Error parsing RIR ID %v = %v", d.Id(), err)
+		log.Debugf("Error parsing RIR ID %v = %v", d.Id(), err)
 		return err
 	}
 
@@ -157,10 +158,10 @@ func resourceNetboxRegionalInternetRegistryDelete(d *schema.ResourceData, meta i
 	out, err := c.IPAM.IPAMRirsDelete(deleteParameters, nil)
 
 	if err != nil {
-		log.Printf("Failed to execute IPAMRirsDelete: %v", err)
+		log.Debugf("Failed to execute IPAMRirsDelete: %v", err)
 	}
 
-	log.Printf("Done Executing IPAMRirsDelete: %v", out)
+	log.Debugf("Done Executing IPAMRirsDelete: %v", out)
 
 	return nil
 }

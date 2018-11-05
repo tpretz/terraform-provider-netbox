@@ -2,8 +2,9 @@ package netbox
 
 import (
 	"fmt"
-	"log"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 
 	"net/url"
 
@@ -38,13 +39,13 @@ type ProviderNetboxClient struct {
 //}
 
 func (c *Config) Client() (interface{}, error) {
-	log.Printf("[DEBUG] config.go Client() AppID: %s", c.AppID)
-	log.Printf("[DEBUG] config.go Client() Endpoint: %s", c.Endpoint)
+	log.Debugf("config.go Client() AppID: %s", c.AppID)
+	log.Debugf("config.go Client() Endpoint: %s", c.Endpoint)
 	cfg := Config{
 		AppID:    c.AppID,
 		Endpoint: c.Endpoint,
 	}
-	log.Printf("[DEBUG] Initializing Netbox controllers asdf asdfasfasdfasd")
+	log.Debugf("Initializing Netbox controllers asdf asdfasfasdfasd")
 	// sess := session.NewSession(cfg)
 	// Create the Client
 	// cli := api.NewNetboxWithAPIKey(cfg.Endpoint, cfg.AppID)
@@ -52,7 +53,7 @@ func (c *Config) Client() (interface{}, error) {
 	parsedUri, uriParseError := url.ParseRequestURI(cfg.Endpoint)
 
 	if uriParseError != nil {
-		log.Printf("Failed to parse URI %v into URL: %v", c.Endpoint, uriParseError)
+		log.Debugf("Failed to parse URI %v into URL: %v", c.Endpoint, uriParseError)
 		return nil, uriParseError
 	}
 
@@ -64,14 +65,14 @@ func (c *Config) Client() (interface{}, error) {
 
 	desiredRuntimeClientSchemes := []string{parsedScheme}
 
-	log.Printf("[DEBUG] Initializing new openapi runtime client, host = %v, desired schemes = %v", parsedUri.Host, desiredRuntimeClientSchemes)
+	log.Debugf("Initializing new openapi runtime client, host = %v, desired schemes = %v", parsedUri.Host, desiredRuntimeClientSchemes)
 	runtimeClient := openapi_runtimeclient.New(parsedUri.Host, client.DefaultBasePath, desiredRuntimeClientSchemes)
 	runtimeClient.DefaultAuthentication = openapi_runtimeclient.APIKeyAuth("Authorization", "header", fmt.Sprintf("Token %v", cfg.AppID))
 	netboxClient := client.New(runtimeClient, strfmt.Default)
 
 	// Validate that our connection is okay
 	if err := c.ValidateConnection(netboxClient); err != nil {
-		log.Printf("[DEBUG] config.go Client() Erro")
+		log.Debugf("config.go Client() Erro")
 		return nil, err
 	}
 	cs := ProviderNetboxClient{
@@ -84,7 +85,7 @@ func (c *Config) Client() (interface{}, error) {
 // ValidateConnection ensures that we can connect to Netbox early, so that we
 // do not fail in the middle of a TF run if it can be prevented.
 func (c *Config) ValidateConnection(sc *client.NetBox) error {
-	log.Printf("[DEBUG] config.go ValidateConnection() validando ")
+	log.Debugf("config.go ValidateConnection() validando ")
 	rs, err := sc.Dcim.DcimRacksList(nil, nil)
 	log.Println(rs)
 	return err

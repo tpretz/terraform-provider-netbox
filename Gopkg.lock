@@ -432,6 +432,14 @@
   revision = "0b12d6b5"
 
 [[projects]]
+  digest = "1:0a69a1c0db3591fcefb47f115b224592c8dfa4368b7ba9fae509d5e16cdc95c8"
+  name = "github.com/konsorten/go-windows-terminal-sequences"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "5c8c8bd35d3832f5d134ae1e1e375b69a4d25242"
+  version = "v1.0.1"
+
+[[projects]]
   branch = "master"
   digest = "1:84a5a2b67486d5d67060ac393aa255d05d24ed5ee41daecd5635ec22657b6492"
   name = "github.com/mailru/easyjson"
@@ -531,6 +539,14 @@
   version = "v1.2.1"
 
 [[projects]]
+  digest = "1:69b1cc331fca23d702bd72f860c6a647afd0aa9fcbc1d0659b1365e26546dd70"
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "bcd833dfe83d3cebad139e4a29ed79cb2318bf95"
+  version = "v1.2.0"
+
+[[projects]]
   digest = "1:db345c377984d0907323c09a9b17f11d995a59649fd38f909727df358b5f9020"
   name = "github.com/ulikunitz/xz"
   packages = [
@@ -559,7 +575,7 @@
   revision = "49fa5e03c418f95f78684c91e155af06aa901a32"
 
 [[projects]]
-  digest = "1:cc91ea751334c85af3f6fd10c4bc34b6f82c1e214a7fd3177ce6f1297efb23e3"
+  digest = "1:b76ad73cc250c315e77a20d39b291f5d8e058302d5e90c94d105ae5e7b687cda"
   name = "golang.org/x/crypto"
   packages = [
     "bcrypt",
@@ -571,6 +587,7 @@
     "openpgp/errors",
     "openpgp/packet",
     "openpgp/s2k",
+    "ssh/terminal",
   ]
   pruneopts = "UT"
   revision = "453249f01cfeb54c3d549ddb75ff152ca243f9d8"
@@ -684,12 +701,14 @@
   input-imports = [
     "github.com/digitalocean/go-netbox/netbox/client",
     "github.com/digitalocean/go-netbox/netbox/client/ipam",
+    "github.com/digitalocean/go-netbox/netbox/models",
     "github.com/go-openapi/runtime/client",
     "github.com/go-openapi/strfmt",
     "github.com/hashicorp/terraform/helper/resource",
     "github.com/hashicorp/terraform/helper/schema",
     "github.com/hashicorp/terraform/plugin",
     "github.com/hashicorp/terraform/terraform",
+    "github.com/sirupsen/logrus",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
