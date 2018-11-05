@@ -9,11 +9,7 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-// resourceNetboxAddress returns the resource structure for the netbox_address
-// resource.
-//
-// Note that we use the data source read function here to pull down data, as
-// read workflow is identical for both the resource and the data source.
+// resourceNetboxRegionalInternetRegistry is the core Terraform resource structure for the netbox_regional_internet_registry resource.
 func resourceNetboxRegionalInternetRegistry() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceNetboxRegionalInternetRegistryCreate,
@@ -42,9 +38,7 @@ func resourceNetboxRegionalInternetRegistry() *schema.Resource {
 	}
 }
 
-// Create will simply create a new instance of your resource.
-// The is also where you will have to set the ID (has to be an Int) of your resource.
-// If the API you are using doesn’t provide an ID, you can always use a random Int.
+// resourceNetboxRegionalInternetRegistryCreate creates a new RIR in Netbox.
 func resourceNetboxRegionalInternetRegistryCreate(d *schema.ResourceData, meta interface{}) error {
 	netboxClient := meta.(*ProviderNetboxClient).client
 
@@ -78,9 +72,7 @@ func resourceNetboxRegionalInternetRegistryCreate(d *schema.ResourceData, meta i
 	return nil
 }
 
-//Update is optional if your Resource doesn’t support update.
-//For example, I’m not using update in the Terraform LDAP Provider.
-//I just destroy and recreate the resource everytime there is a change.
+// resourceNetboxRegionalInternetRegistryUpdate applies updates to a RIR by ID when deltas are detected by Terraform.
 func resourceNetboxRegionalInternetRegistryUpdate(d *schema.ResourceData, meta interface{}) error {
 	netboxClient := meta.(*ProviderNetboxClient).client
 
@@ -120,6 +112,7 @@ func resourceNetboxRegionalInternetRegistryUpdate(d *schema.ResourceData, meta i
 	return nil
 }
 
+// resourceNetboxRegionalInternetRegistryRead reads an existing RIR by ID.
 func resourceNetboxRegionalInternetRegistryRead(d *schema.ResourceData, meta interface{}) error {
 	netboxClient := meta.(*ProviderNetboxClient).client
 
@@ -146,6 +139,7 @@ func resourceNetboxRegionalInternetRegistryRead(d *schema.ResourceData, meta int
 	return nil
 }
 
+// resourceNetboxRegionalInternetRegistryDelete deletes an existing RIR by ID.
 func resourceNetboxRegionalInternetRegistryDelete(d *schema.ResourceData, meta interface{}) error {
 	log.Printf("[DEBUG] Deleting RIR: %v\n", d)
 
