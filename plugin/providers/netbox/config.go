@@ -1,10 +1,17 @@
 package netbox
 
 import (
+	"fmt"
 	"log"
+	"strings"
 
-	api "github.com/digitalocean/go-netbox/netbox"
+	"net/url"
+
+	"github.com/go-openapi/strfmt"
+
 	"github.com/digitalocean/go-netbox/netbox/client"
+
+	openapi_runtimeclient "github.com/go-openapi/runtime/client"
 )
 
 // Config provides the configuration for the NETBOX providerr.
@@ -37,18 +44,38 @@ func (c *Config) Client() (interface{}, error) {
 		AppID:    c.AppID,
 		Endpoint: c.Endpoint,
 	}
-	log.Printf("[DEBUG] Initializing Netbox controllers")
+	log.Printf("[DEBUG] Initializing Netbox controllers asdf asdfasfasdfasd")
 	// sess := session.NewSession(cfg)
 	// Create the Client
-	cli := api.NewNetboxWithAPIKey(cfg.Endpoint, cfg.AppID)
+	// cli := api.NewNetboxWithAPIKey(cfg.Endpoint, cfg.AppID)
+
+	parsedUri, uriParseError := url.ParseRequestURI(cfg.Endpoint)
+
+	if uriParseError != nil {
+		log.Printf("Failed to parse URI %v into URL: %v", c.Endpoint, uriParseError)
+		return nil, uriParseError
+	}
+
+	parsedScheme := strings.ToLower(parsedUri.Scheme)
+
+	if parsedScheme == "" {
+		parsedScheme = "http"
+	}
+
+	desiredRuntimeClientSchemes := []string{parsedScheme}
+
+	log.Printf("[DEBUG] Initializing new openapi runtime client, host = %v, desired schemes = %v", parsedUri.Host, desiredRuntimeClientSchemes)
+	runtimeClient := openapi_runtimeclient.New(parsedUri.Host, client.DefaultBasePath, desiredRuntimeClientSchemes)
+	runtimeClient.DefaultAuthentication = openapi_runtimeclient.APIKeyAuth("Authorization", "header", fmt.Sprintf("Token %v", cfg.AppID))
+	netboxClient := client.New(runtimeClient, strfmt.Default)
 
 	// Validate that our connection is okay
-	if err := c.ValidateConnection(cli); err != nil {
+	if err := c.ValidateConnection(netboxClient); err != nil {
 		log.Printf("[DEBUG] config.go Client() Erro")
 		return nil, err
 	}
 	cs := ProviderNetboxClient{
-		client:        cli,
+		client:        netboxClient,
 		configuration: cfg,
 	}
 	return &cs, nil

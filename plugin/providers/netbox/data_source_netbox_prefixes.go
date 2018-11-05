@@ -38,6 +38,8 @@ func dataSourceNetboxPrefixesRead(d *schema.ResourceData, meta interface{}) erro
 		log.Printf("- Executado...\n")
 		if err == nil {
 
+			log.Printf("IPAMPrefixesRead successful: parsing results: %v", out.Error())
+
 			d.SetId(strconv.FormatInt(out.Payload.ID, 10)) // Sempre setar o ID
 			d.Set("created", out.Payload.Created.String())
 			d.Set("description", out.Payload.Description)
@@ -45,8 +47,12 @@ func dataSourceNetboxPrefixesRead(d *schema.ResourceData, meta interface{}) erro
 			d.Set("is_pool", out.Payload.IsPool)
 			d.Set("prefix", out.Payload.Prefix)
 			d.Set("last_updated", out.Payload.LastUpdated)
-			d.Set("vlan_vid", *out.Payload.Vlan.Vid)
-			log.Print("\n")
+
+			if out.Payload.Vlan != nil {
+				d.Set("vlan_vid", *out.Payload.Vlan.Vid)
+			}
+
+			log.Printf("Finished parsing results from IPAMPrefixesRead")
 		} else {
 			log.Printf("erro na chamada do IPAMPrefixesList\n")
 			log.Printf("Err: %v\n", err)
@@ -86,6 +92,9 @@ func dataSourceNetboxPrefixesRead(d *schema.ResourceData, meta interface{}) erro
 	default:
 		return errors.New("No valid combination of parameters found - prefix_id or vlan_vid")
 	}
+
+	log.Printf("Exiting dataSourceNetboxPrefixesRead")
+
 	return nil
 }
 

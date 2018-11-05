@@ -8,6 +8,12 @@ build: deps
 	gox -osarch="linux/amd64 windows/amd64 darwin/amd64" \
 	-output="pkg/{{.OS}}_{{.Arch}}/terraform-provider-netbox" .
 
+install: clean build
+	cp pkg/linux_amd64/terraform-provider-netbox ~/.terraform.d/plugins
+
+tfplan: install
+	terraform init -upgrade && TF_LOG=DEBUG terraform plan
+
 release: release_bump release_build
 
 release_bump:
