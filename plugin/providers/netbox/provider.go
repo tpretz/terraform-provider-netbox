@@ -46,13 +46,15 @@ func providerSchema() map[string]*schema.Schema {
 func providerResources() map[string]*schema.Resource {
 	return map[string]*schema.Resource{
 		// Original
-		"netbox_vlans":                  resourceNetboxVlans(),
-		"netbox_prefixes_available_ips": resourceNetboxPrefixesAvailableIps(),
+		//"netbox_vlans":                  resourceNetboxVlans(),
+		//"netbox_prefixes_available_ips": resourceNetboxPrefixesAvailableIps(),
 		// New
-		"netbox_regional_internet_registry": resourceNetboxRegionalInternetRegistry(),
-		"netbox_ipam_vrf_domain":            resourceNetboxIpamVrfDomain(),
-		"netbox_ipam_aggregate":             resourceNetboxIpamAggregate(),
-		"netbox_ipam_prefix":                resourceNetboxIpamPrefix(),
+		"netbox_ipam_rir":       resourceNetboxRegionalInternetRegistry(),
+		"netbox_ipam_vrf":       resourceNetboxIpamVrfDomain(),
+		"netbox_ipam_aggregate": resourceNetboxIpamAggregate(),
+		"netbox_ipam_prefix":    resourceNetboxIpamPrefix(),
+		// Org
+		"netbox_org_tenant": resourceNetboxOrgTenant(),
 	}
 }
 
