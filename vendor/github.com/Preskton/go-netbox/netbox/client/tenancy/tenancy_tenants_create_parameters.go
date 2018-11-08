@@ -79,7 +79,7 @@ for the tenancy tenants create operation typically these are written to a http.R
 type TenancyTenantsCreateParams struct {
 
 	/*Data*/
-	Data *models.Tenant
+	Data *models.TenantCreateUpdate
 
 	timeout    time.Duration
 	Context    context.Context
@@ -120,13 +120,13 @@ func (o *TenancyTenantsCreateParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithData adds the data to the tenancy tenants create params
-func (o *TenancyTenantsCreateParams) WithData(data *models.Tenant) *TenancyTenantsCreateParams {
+func (o *TenancyTenantsCreateParams) WithData(data *models.TenantCreateUpdate) *TenancyTenantsCreateParams {
 	o.SetData(data)
 	return o
 }
 
 // SetData adds the data to the tenancy tenants create params
-func (o *TenancyTenantsCreateParams) SetData(data *models.Tenant) {
+func (o *TenancyTenantsCreateParams) SetData(data *models.TenantCreateUpdate) {
 	o.Data = data
 }
 

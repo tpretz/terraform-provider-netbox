@@ -12,10 +12,10 @@ install: clean build
 	cp pkg/linux_amd64/terraform-provider-netbox ~/.terraform.d/plugins
 
 tfplan: install
-	terraform init -upgrade && TF_LOG=DEBUG terraform plan
+	terraform init -upgrade && terraform plan
 
 tfapply: install
-	terraform init -upgrade && TF_LOG=DEBUG terraform apply
+	terraform init -upgrade && terraform apply
 
 release: release_bump release_build
 

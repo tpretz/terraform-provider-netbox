@@ -3,7 +3,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:7f93939d48ef5faee8c79a8244638fb8a511a4ba660a10d2d60c955c8b18ed9c"
+  digest = "1:8bedc6a3e3d4c6d0ee8b7b923d0ed97ffb4f1a0c64b527231413aeaf74bbd5e2"
   name = "github.com/Preskton/go-netbox"
   packages = [
     "netbox/client",
@@ -17,7 +17,7 @@
     "netbox/models",
   ]
   pruneopts = "UT"
-  revision = "75cb49e82f875f6ab95862fc676601de3937a3eb"
+  revision = "18269cf06cf70d0657bc3cb86ac5072025b033e6"
 
 [[projects]]
   digest = "1:d1665c44bd5db19aaee18d1b6233c99b0b9a986e8bccb24ef54747547a48027f"
@@ -701,6 +701,7 @@
   input-imports = [
     "github.com/Preskton/go-netbox/netbox/client",
     "github.com/Preskton/go-netbox/netbox/client/ipam",
+    "github.com/Preskton/go-netbox/netbox/client/tenancy",
     "github.com/Preskton/go-netbox/netbox/models",
     "github.com/go-openapi/runtime/client",
     "github.com/go-openapi/strfmt",

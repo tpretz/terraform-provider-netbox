@@ -32,7 +32,7 @@ func resourceNetboxIpamPrefix() *schema.Resource {
 			},
 			"vrf_id": &schema.Schema{
 				Type:     schema.TypeInt,
-				Required: true,
+				Optional: true,
 			},
 			"is_pool": &schema.Schema{
 				Type:     schema.TypeBool,

@@ -54,7 +54,8 @@ func providerResources() map[string]*schema.Resource {
 		"netbox_ipam_aggregate": resourceNetboxIpamAggregate(),
 		"netbox_ipam_prefix":    resourceNetboxIpamPrefix(),
 		// Org
-		"netbox_org_tenant": resourceNetboxOrgTenant(),
+		"netbox_org_tenant":       resourceNetboxOrgTenant(),
+		"netbox_org_tenant_group": resourceNetboxOrgTenantGroup(),
 	}
 }
 

@@ -42,6 +42,10 @@ func resourceNetboxOrgTenant() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"tenant_group_id": &schema.Schema{
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -54,14 +58,17 @@ func resourceNetboxOrgTenantCreate(d *schema.ResourceData, meta interface{}) err
 	slug := d.Get("slug").(string)
 	description := d.Get("description").(string)
 	comments := d.Get("comments").(string)
+	tenantGroupID := int64(d.Get("tenant_group_id").(int))
 
 	var parm = tenancy.NewTenancyTenantsCreateParams().WithData(
-		&models.Tenant{
+		&models.TenantCreateUpdate{
 			Name:        &name,
 			Slug:        &slug,
 			Description: description,
 			Comments:    comments,
 			Tags:        []string{},
+			Group:       tenantGroupID,
+			// TODO Tenant Group
 		},
 	)
 
@@ -94,16 +101,18 @@ func resourceNetboxOrgTenantUpdate(d *schema.ResourceData, meta interface{}) err
 	slug := d.Get("slug").(string)
 	description := d.Get("description").(string)
 	comments := d.Get("comments").(string)
+	tenantGroupID := int64(d.Get("tenant_group_id").(int))
 
 	var parm = tenancy.NewTenancyTenantsUpdateParams().
 		WithID(id).
 		WithData(
-			&models.Tenant{
+			&models.TenantCreateUpdate{
 				Name:        &name,
 				Slug:        &slug,
 				Description: description,
 				Comments:    comments,
 				Tags:        []string{},
+				Group:       tenantGroupID,
 			},
 		)
 
@@ -141,6 +150,12 @@ func resourceNetboxOrgTenantRead(d *schema.ResourceData, meta interface{}) error
 	d.Set("slug", readResult.Payload.Slug)
 	d.Set("description", readResult.Payload.Description)
 	d.Set("comments", readResult.Payload.Comments)
+
+	var tenantGroupID int64
+	if readResult.Payload.Group != nil {
+		tenantGroupID = readResult.Payload.Group.ID
+	}
+	d.Set("tenant_group_id", tenantGroupID)
 
 	return nil
 }
