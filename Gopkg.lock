@@ -2,6 +2,24 @@
 
 
 [[projects]]
+  branch = "master"
+  digest = "1:22b944a875ffe9c2d5c6c9763667cc2fe777d5f217bc7e60197888d9892b09cc"
+  name = "github.com/Preskton/go-netbox"
+  packages = [
+    "netbox/client",
+    "netbox/client/circuits",
+    "netbox/client/dcim",
+    "netbox/client/extras",
+    "netbox/client/ipam",
+    "netbox/client/secrets",
+    "netbox/client/tenancy",
+    "netbox/client/virtualization",
+    "netbox/models",
+  ]
+  pruneopts = "UT"
+  revision = "8ef87f775b592eca4c62b441720752e6bf984959"
+
+[[projects]]
   digest = "1:d1665c44bd5db19aaee18d1b6233c99b0b9a986e8bccb24ef54747547a48027f"
   name = "github.com/PuerkitoBio/purell"
   packages = ["."]
@@ -131,24 +149,6 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:7c0dd2ec78028f19c80f288dfd20ec51070a443f8d521d098dc32e8964636b6b"
-  name = "github.com/digitalocean/go-netbox"
-  packages = [
-    "netbox/client",
-    "netbox/client/circuits",
-    "netbox/client/dcim",
-    "netbox/client/extras",
-    "netbox/client/ipam",
-    "netbox/client/secrets",
-    "netbox/client/tenancy",
-    "netbox/client/virtualization",
-    "netbox/models",
-  ]
-  pruneopts = "UT"
-  revision = "29433ec527e78486ea0a5758817ab672d977f90e"
-
-[[projects]]
-  branch = "master"
   digest = "1:7fb51688eadf38272411852d7a2b3538c7caff53309abee6c0964a83c00fe69e"
   name = "github.com/globalsign/mgo"
   packages = [
@@ -202,7 +202,8 @@
   version = "v0.17.2"
 
 [[projects]]
-  digest = "1:cc4f0df1c69dd1928f4dc32ab31a637fcfa4b04b09c78af965d67980cfbfc486"
+  branch = "master"
+  digest = "1:10f3a2f8d2209f885243d2cc1d73e5bc734215e26ab2193025a4937d32ab4f9f"
   name = "github.com/go-openapi/runtime"
   packages = [
     ".",
@@ -215,8 +216,7 @@
     "security",
   ]
   pruneopts = "UT"
-  revision = "231d7876b7019dbcbfc97a7ba764379497b67c1d"
-  version = "v0.17.2"
+  revision = "aadb2cc7b8862fdab251bf60a8b9d2a951c9746c"
 
 [[projects]]
   digest = "1:394fed5c0425fe01da3a34078adaa1682e4deaea6e5d232dde25c4034004c151"
@@ -699,9 +699,9 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/digitalocean/go-netbox/netbox/client",
-    "github.com/digitalocean/go-netbox/netbox/client/ipam",
-    "github.com/digitalocean/go-netbox/netbox/models",
+    "github.com/Preskton/go-netbox/netbox/client",
+    "github.com/Preskton/go-netbox/netbox/client/ipam",
+    "github.com/Preskton/go-netbox/netbox/models",
     "github.com/go-openapi/runtime/client",
     "github.com/go-openapi/strfmt",
     "github.com/hashicorp/terraform/helper/resource",

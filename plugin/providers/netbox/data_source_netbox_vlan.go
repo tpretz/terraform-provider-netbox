@@ -5,11 +5,8 @@ import (
 	"log"
 	"strconv"
 
-	// "errors"
-
-	"github.com/digitalocean/go-netbox/netbox/client/ipam"
+	"github.com/Preskton/go-netbox/netbox/client/ipam"
 	"github.com/hashicorp/terraform/helper/schema"
-	// "github.com/digitalocean/go-netbox/netbox/client"
 )
 
 func dataSourceNetboxVlans() *schema.Resource {

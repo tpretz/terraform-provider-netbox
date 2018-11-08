@@ -5,8 +5,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/digitalocean/go-netbox/netbox/client/ipam"
-	"github.com/digitalocean/go-netbox/netbox/models"
+	"github.com/Preskton/go-netbox/netbox/client/ipam"
+	"github.com/Preskton/go-netbox/netbox/models"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -53,7 +53,7 @@ func resourceNetboxIpamVrfDomainCreate(d *schema.ResourceData, meta interface{})
 	description := d.Get("description").(string)
 
 	var parm = ipam.NewIPAMVrfsCreateParams().WithData(
-		&models.WritableVRF{
+		&models.VRF{
 			Rd:            &routeDistinguisher,
 			Name:          &name,
 			Description:   description,
@@ -98,7 +98,7 @@ func resourceNetboxIpamVrfDomainUpdate(d *schema.ResourceData, meta interface{})
 	var parm = ipam.NewIPAMVrfsUpdateParams().
 		WithID(int64(id)).
 		WithData(
-			&models.WritableVRF{
+			&models.VRF{
 				Rd:            &routeDistinguisher,
 				Name:          &name,
 				Description:   description,

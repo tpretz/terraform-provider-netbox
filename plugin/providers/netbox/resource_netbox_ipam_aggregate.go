@@ -5,8 +5,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/digitalocean/go-netbox/netbox/client/ipam"
-	"github.com/digitalocean/go-netbox/netbox/models"
+	"github.com/Preskton/go-netbox/netbox/client/ipam"
+	"github.com/Preskton/go-netbox/netbox/models"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -58,10 +58,12 @@ func resourceNetboxIpamAggregateCreate(d *schema.ResourceData, meta interface{})
 	// TODO dateAdded
 
 	var parm = ipam.NewIPAMAggregatesCreateParams().WithData(
-		&models.WritableAggregate{
+		&models.Aggregate{
 			Prefix:      &prefix,
 			Description: description,
-			Rir:         &rirID,
+			Rir: &models.NestedRIR{
+				ID: rirID,
+			},
 			// TODO DateAdded
 		},
 	)
@@ -101,10 +103,13 @@ func resourceNetboxIpamAggregateUpdate(d *schema.ResourceData, meta interface{})
 	// TODO dateAdded
 
 	var parm = ipam.NewIPAMAggregatesUpdateParams().WithID(int64(id)).WithData(
-		&models.WritableAggregate{
+		&models.Aggregate{
 			Prefix:      &prefix,
 			Description: description,
-			Rir:         &rirID,
+			Rir: &models.NestedRIR{
+				ID: rirID,
+			},
+			// TODO DateAdded
 		},
 	)
 

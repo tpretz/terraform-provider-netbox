@@ -1,11 +1,7 @@
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/digitalocean/go-netbox"
-
-[[constraint]]
   name = "github.com/go-openapi/runtime"
-  version = "0.17.2"
+  branch = "master"
 
 [[constraint]]
   name = "github.com/go-openapi/strfmt"
@@ -22,3 +18,7 @@
 [[constraint]]
   name = "github.com/sirupsen/logrus"
   version = "1.2.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/Preskton/go-netbox"
