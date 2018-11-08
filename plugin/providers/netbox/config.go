@@ -15,10 +15,10 @@ import (
 	openapi_runtimeclient "github.com/go-openapi/runtime/client"
 )
 
-// Config provides the configuration for the NETBOX providerr.
+// Config provides the configuration for the Netbox provider.
 type Config struct {
 	// The application ID required for API requests. This needs to be created
-	// in the NETBOX console. It can also be supplied via the NETBOX_APP_ID
+	// in the NETBOX console (Admin->Users->Tokens). It can also be supplied via the NETBOX_APP_ID
 	// environment variable.
 	AppID string
 
@@ -32,11 +32,7 @@ type ProviderNetboxClient struct {
 	configuration Config
 }
 
-// ProviderNetboxClient is a structure that contains the client connections
-// necessary to interface with the Go-Netbox API
-//type ProviderNetboxClient struct {
-//		client *Client
-//}
+// Client does the heavy lifting of establishing a base Open API client to Netbox.
 func (c *Config) Client() (interface{}, error) {
 	cfg := Config{
 		AppID:    c.AppID,

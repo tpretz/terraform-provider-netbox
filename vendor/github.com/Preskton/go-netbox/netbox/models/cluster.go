@@ -64,7 +64,7 @@ type Cluster struct {
 	Site *NestedSite `json:"site,omitempty"`
 
 	// Tags
-	Tags string `json:"tags,omitempty"`
+	Tags []string `json:"tags"`
 
 	// type
 	// Required: true

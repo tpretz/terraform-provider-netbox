@@ -3,7 +3,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:22b944a875ffe9c2d5c6c9763667cc2fe777d5f217bc7e60197888d9892b09cc"
+  digest = "1:7f93939d48ef5faee8c79a8244638fb8a511a4ba660a10d2d60c955c8b18ed9c"
   name = "github.com/Preskton/go-netbox"
   packages = [
     "netbox/client",
@@ -17,7 +17,7 @@
     "netbox/models",
   ]
   pruneopts = "UT"
-  revision = "8ef87f775b592eca4c62b441720752e6bf984959"
+  revision = "75cb49e82f875f6ab95862fc676601de3937a3eb"
 
 [[projects]]
   digest = "1:d1665c44bd5db19aaee18d1b6233c99b0b9a986e8bccb24ef54747547a48027f"

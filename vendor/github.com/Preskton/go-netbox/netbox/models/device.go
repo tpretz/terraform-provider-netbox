@@ -120,7 +120,7 @@ type Device struct {
 	Status *DeviceStatus `json:"status,omitempty"`
 
 	// Tags
-	Tags string `json:"tags,omitempty"`
+	Tags []string `json:"tags"`
 
 	// tenant
 	Tenant *NestedTenant `json:"tenant,omitempty"`

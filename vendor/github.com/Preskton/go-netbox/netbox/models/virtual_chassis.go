@@ -44,7 +44,7 @@ type VirtualChassis struct {
 	Master *NestedDevice `json:"master"`
 
 	// Tags
-	Tags string `json:"tags,omitempty"`
+	Tags []string `json:"tags"`
 }
 
 // Validate validates this virtual chassis

@@ -85,7 +85,7 @@ type Provider struct {
 	Slug *string `json:"slug"`
 
 	// Tags
-	Tags string `json:"tags,omitempty"`
+	Tags []string `json:"tags"`
 }
 
 // Validate validates this provider

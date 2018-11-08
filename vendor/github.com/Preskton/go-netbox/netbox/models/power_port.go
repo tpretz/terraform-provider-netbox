@@ -55,7 +55,7 @@ type PowerPort struct {
 	PowerOutlet *NestedPowerOutlet `json:"power_outlet,omitempty"`
 
 	// Tags
-	Tags string `json:"tags,omitempty"`
+	Tags []string `json:"tags"`
 }
 
 // Validate validates this power port

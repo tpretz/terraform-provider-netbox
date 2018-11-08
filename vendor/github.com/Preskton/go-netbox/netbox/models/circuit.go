@@ -78,7 +78,7 @@ type Circuit struct {
 	Status *CircuitStatus `json:"status,omitempty"`
 
 	// Tags
-	Tags string `json:"tags,omitempty"`
+	Tags []string `json:"tags"`
 
 	// tenant
 	Tenant *NestedTenant `json:"tenant,omitempty"`

@@ -50,7 +50,7 @@ type ConsoleServerPort struct {
 	Name *string `json:"name"`
 
 	// Tags
-	Tags string `json:"tags,omitempty"`
+	Tags []string `json:"tags"`
 }
 
 // Validate validates this console server port

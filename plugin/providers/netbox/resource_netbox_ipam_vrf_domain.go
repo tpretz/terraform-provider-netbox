@@ -1,7 +1,7 @@
 package netbox
 
 import (
-	"strconv"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 
@@ -39,6 +39,10 @@ func resourceNetboxIpamVrfDomain() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"vrf_id": &schema.Schema{
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
 		},
 	}
 }
@@ -58,6 +62,7 @@ func resourceNetboxIpamVrfDomainCreate(d *schema.ResourceData, meta interface{})
 			Name:          &name,
 			Description:   description,
 			EnforceUnique: enforceUnique,
+			Tags:          []string{},
 		},
 	)
 
@@ -72,7 +77,8 @@ func resourceNetboxIpamVrfDomainCreate(d *schema.ResourceData, meta interface{})
 	}
 
 	// TODO Probably a better way to parse this ID
-	d.SetId(strconv.Itoa(int(out.Payload.ID)))
+	d.SetId(fmt.Sprintf("ipam/vrf/%d", out.Payload.ID))
+	d.Set("vrf_id", out.Payload.ID)
 
 	log.Debugf("Done Executing IPAMVrfsCreate: %v", out)
 
@@ -83,12 +89,7 @@ func resourceNetboxIpamVrfDomainCreate(d *schema.ResourceData, meta interface{})
 func resourceNetboxIpamVrfDomainUpdate(d *schema.ResourceData, meta interface{}) error {
 	netboxClient := meta.(*ProviderNetboxClient).client
 
-	id, err := strconv.Atoi(d.Id())
-
-	if err != nil {
-		log.Debugf("Error parsing VRF ID %v = %v", d.Id(), err)
-		return err
-	}
+	id := int64(d.Get("vrf_id").(int))
 
 	name := d.Get("name").(string)
 	routeDistinguisher := d.Get("route_distinguisher").(string)
@@ -96,13 +97,14 @@ func resourceNetboxIpamVrfDomainUpdate(d *schema.ResourceData, meta interface{})
 	description := d.Get("description").(string)
 
 	var parm = ipam.NewIPAMVrfsUpdateParams().
-		WithID(int64(id)).
+		WithID(id).
 		WithData(
 			&models.VRF{
 				Rd:            &routeDistinguisher,
 				Name:          &name,
 				Description:   description,
 				EnforceUnique: enforceUnique,
+				Tags:          []string{},
 			},
 		)
 
@@ -125,14 +127,9 @@ func resourceNetboxIpamVrfDomainUpdate(d *schema.ResourceData, meta interface{})
 func resourceNetboxIpamVrfDomainRead(d *schema.ResourceData, meta interface{}) error {
 	netboxClient := meta.(*ProviderNetboxClient).client
 
-	id, err := strconv.Atoi(d.Id())
+	id := int64(d.Get("vrf_id").(int))
 
-	if err != nil {
-		log.Debugf("Error parsing VRF ID %v = %v", d.Id(), err)
-		return err
-	}
-
-	var readParams = ipam.NewIPAMVrfsReadParams().WithID(int64(id))
+	var readParams = ipam.NewIPAMVrfsReadParams().WithID(id)
 
 	readResult, err := netboxClient.IPAM.IPAMVrfsRead(readParams, nil)
 
@@ -153,14 +150,9 @@ func resourceNetboxIpamVrfDomainRead(d *schema.ResourceData, meta interface{}) e
 func resourceNetboxIpamVrfDomainDelete(d *schema.ResourceData, meta interface{}) error {
 	log.Debugf("Deleting VRF: %v\n", d)
 
-	id, err := strconv.Atoi(d.Id())
+	id := int64(d.Get("vrf_id").(int))
 
-	if err != nil {
-		log.Debugf("Error parsing VRF ID %v = %v", d.Id(), err)
-		return err
-	}
-
-	var deleteParameters = ipam.NewIPAMVrfsDeleteParams().WithID(int64(id))
+	var deleteParameters = ipam.NewIPAMVrfsDeleteParams().WithID(id)
 
 	c := meta.(*ProviderNetboxClient).client
 

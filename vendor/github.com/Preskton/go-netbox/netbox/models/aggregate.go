@@ -72,7 +72,7 @@ type Aggregate struct {
 	Rir *NestedRIR `json:"rir"`
 
 	// Tags
-	Tags string `json:"tags,omitempty"`
+	Tags []string `json:"tags"`
 }
 
 // Validate validates this aggregate

@@ -73,7 +73,7 @@ type InventoryItem struct {
 	Serial string `json:"serial,omitempty"`
 
 	// Tags
-	Tags string `json:"tags,omitempty"`
+	Tags []string `json:"tags"`
 }
 
 // Validate validates this inventory item

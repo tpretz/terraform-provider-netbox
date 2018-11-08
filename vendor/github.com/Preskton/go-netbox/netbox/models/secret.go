@@ -71,7 +71,7 @@ type Secret struct {
 	Role *NestedSecretRole `json:"role"`
 
 	// Tags
-	Tags string `json:"tags,omitempty"`
+	Tags []string `json:"tags"`
 }
 
 // Validate validates this secret

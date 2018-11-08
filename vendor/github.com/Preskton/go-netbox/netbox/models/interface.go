@@ -90,7 +90,7 @@ type Interface struct {
 	TaggedVlans []int64 `json:"tagged_vlans"`
 
 	// Tags
-	Tags string `json:"tags,omitempty"`
+	Tags []string `json:"tags"`
 
 	// untagged vlan
 	UntaggedVlan *InterfaceVLAN `json:"untagged_vlan,omitempty"`
