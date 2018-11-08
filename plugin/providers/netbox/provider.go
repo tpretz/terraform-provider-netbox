@@ -65,6 +65,7 @@ func providerResources() map[string]*schema.Resource {
 		"netbox_prefixes_available_ips":     resourceNetboxPrefixesAvailableIps(),
 		"netbox_regional_internet_registry": resourceNetboxRegionalInternetRegistry(),
 		"netbox_ipam_vrf_domain":            resourceNetboxIpamVrfDomain(),
+		"netbox_ipam_aggregate":             resourceNetboxIpamAggregate(),
 	}
 }
 

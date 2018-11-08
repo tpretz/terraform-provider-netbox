@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
-// resourceNetboxIpamVrfDomain is the core Terraform resource structure for the netbox_regional_internet_registry resource.
+// resourceNetboxIpamVrfDomain is the core Terraform resource structure for the netbox_ipam_vrf_domain resource.
 func resourceNetboxIpamVrfDomain() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceNetboxIpamVrfDomainCreate,

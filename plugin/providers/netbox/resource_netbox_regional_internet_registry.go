@@ -1,7 +1,7 @@
 package netbox
 
 import (
-	"strconv"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 
@@ -22,6 +22,10 @@ func resourceNetboxRegionalInternetRegistry() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
+			"rir_id": &schema.Schema{
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
 			"name": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
@@ -66,7 +70,8 @@ func resourceNetboxRegionalInternetRegistryCreate(d *schema.ResourceData, meta i
 	}
 
 	// TODO Probably a better way to parse this ID
-	d.SetId(strconv.Itoa(int(out.Payload.ID)))
+	d.SetId(fmt.Sprintf("ipam/rir/%v", out.Payload.ID))
+	d.Set("rir_id", out.Payload.ID)
 
 	log.Debugf("Done Executing IPAMRirsCreate: %v", out)
 
@@ -77,19 +82,14 @@ func resourceNetboxRegionalInternetRegistryCreate(d *schema.ResourceData, meta i
 func resourceNetboxRegionalInternetRegistryUpdate(d *schema.ResourceData, meta interface{}) error {
 	netboxClient := meta.(*ProviderNetboxClient).client
 
-	id, err := strconv.Atoi(d.Id())
-
-	if err != nil {
-		log.Debugf("Error parsing RIR ID %v = %v", d.Id(), err)
-		return err
-	}
-
+	//terraformID := d.Id()
+	netboxID := int64(d.Get("rir_id").(int))
 	name := d.Get("name").(string)
 	slug := d.Get("slug").(string)
 	isPrivate := d.Get("is_private").(bool)
 
 	var parm = ipam.NewIPAMRirsUpdateParams().
-		WithID(int64(id)).
+		WithID(netboxID).
 		WithData(
 			&models.RIR{
 				Slug:      &slug,
@@ -117,25 +117,24 @@ func resourceNetboxRegionalInternetRegistryUpdate(d *schema.ResourceData, meta i
 func resourceNetboxRegionalInternetRegistryRead(d *schema.ResourceData, meta interface{}) error {
 	netboxClient := meta.(*ProviderNetboxClient).client
 
-	id, err := strconv.Atoi(d.Id())
+	//terraformID := d.Id()
+	netboxID := int64(d.Get("rir_id").(int))
 
-	if err != nil {
-		log.Debugf("Error parsing RIR ID %v = %v", d.Id(), err)
-		return err
-	}
-
-	var readParams = ipam.NewIPAMRirsReadParams().WithID(int64(id))
+	var readParams = ipam.NewIPAMRirsReadParams().WithID(netboxID)
 
 	readRirResult, err := netboxClient.IPAM.IPAMRirsRead(readParams, nil)
 
 	if err != nil {
-		log.Debugf("Error fetching RIR ID # %d from Netbox = %v", id, err)
+		log.Debugf("Error fetching RIR ID # %d from Netbox = %v", netboxID, err)
 		return err
 	}
+
+	log.Debugf("Read RIR %d = %v", netboxID, readRirResult.Payload)
 
 	d.Set("name", readRirResult.Payload.Name)
 	d.Set("slug", readRirResult.Payload.Slug)
 	d.Set("is_private", readRirResult.Payload.IsPrivate)
+	d.Set("rir_id", readRirResult.Payload.ID)
 
 	return nil
 }
@@ -144,14 +143,9 @@ func resourceNetboxRegionalInternetRegistryRead(d *schema.ResourceData, meta int
 func resourceNetboxRegionalInternetRegistryDelete(d *schema.ResourceData, meta interface{}) error {
 	log.Debugf("Deleting RIR: %v\n", d)
 
-	id, err := strconv.Atoi(d.Id())
+	netboxID := int64(d.Get("rir_id").(int))
 
-	if err != nil {
-		log.Debugf("Error parsing RIR ID %v = %v", d.Id(), err)
-		return err
-	}
-
-	var deleteParameters = ipam.NewIPAMRirsDeleteParams().WithID(int64(id))
+	var deleteParameters = ipam.NewIPAMRirsDeleteParams().WithID(netboxID)
 
 	c := meta.(*ProviderNetboxClient).client
 

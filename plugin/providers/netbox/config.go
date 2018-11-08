@@ -37,27 +37,32 @@ type ProviderNetboxClient struct {
 //type ProviderNetboxClient struct {
 //		client *Client
 //}
-
 func (c *Config) Client() (interface{}, error) {
-	log.Debugf("config.go Client() AppID: %s", c.AppID)
-	log.Debugf("config.go Client() Endpoint: %s", c.Endpoint)
 	cfg := Config{
 		AppID:    c.AppID,
 		Endpoint: c.Endpoint,
 	}
-	log.Debugf("Initializing Netbox controllers asdf asdfasfasdfasd")
-	// sess := session.NewSession(cfg)
-	// Create the Client
-	// cli := api.NewNetboxWithAPIKey(cfg.Endpoint, cfg.AppID)
 
-	parsedUri, uriParseError := url.ParseRequestURI(cfg.Endpoint)
+	log.WithFields(
+		log.Fields{
+			"uri": cfg.Endpoint,
+		},
+	).Debug("Initializing Netbox client")
+
+	parsedURI, uriParseError := url.ParseRequestURI(cfg.Endpoint)
 
 	if uriParseError != nil {
-		log.Debugf("Failed to parse URI %v into URL: %v", c.Endpoint, uriParseError)
+		log.WithFields(
+			log.Fields{
+				"uri":   cfg.Endpoint,
+				"error": uriParseError,
+			},
+		).Error("Failed to parse URI")
+
 		return nil, uriParseError
 	}
 
-	parsedScheme := strings.ToLower(parsedUri.Scheme)
+	parsedScheme := strings.ToLower(parsedURI.Scheme)
 
 	if parsedScheme == "" {
 		parsedScheme = "http"
@@ -65,28 +70,52 @@ func (c *Config) Client() (interface{}, error) {
 
 	desiredRuntimeClientSchemes := []string{parsedScheme}
 
-	log.Debugf("Initializing new openapi runtime client, host = %v, desired schemes = %v", parsedUri.Host, desiredRuntimeClientSchemes)
-	runtimeClient := openapi_runtimeclient.New(parsedUri.Host, client.DefaultBasePath, desiredRuntimeClientSchemes)
+	log.WithFields(
+		log.Fields{
+			"host":    parsedURI.Host,
+			"schemes": desiredRuntimeClientSchemes,
+		},
+	).Debug("Initializing open API runtime client")
+
+	runtimeClient := openapi_runtimeclient.New(parsedURI.Host, client.DefaultBasePath, desiredRuntimeClientSchemes)
+
 	runtimeClient.DefaultAuthentication = openapi_runtimeclient.APIKeyAuth("Authorization", "header", fmt.Sprintf("Token %v", cfg.AppID))
+	runtimeClient.SetLogger(&log.Logger{})
+	runtimeClient.SetDebug(true)
 	netboxClient := client.New(runtimeClient, strfmt.Default)
 
 	// Validate that our connection is okay
 	if err := c.ValidateConnection(netboxClient); err != nil {
-		log.Debugf("config.go Client() Erro")
+		log.WithFields(
+			log.Fields{
+				"uri":   cfg.Endpoint,
+				"error": err,
+			},
+		).Error("Failed to validate connection")
+
 		return nil, err
 	}
-	cs := ProviderNetboxClient{
+
+	terraformNetboxClient := ProviderNetboxClient{
 		client:        netboxClient,
 		configuration: cfg,
 	}
-	return &cs, nil
+
+	return &terraformNetboxClient, nil
 }
 
 // ValidateConnection ensures that we can connect to Netbox early, so that we
 // do not fail in the middle of a TF run if it can be prevented.
 func (c *Config) ValidateConnection(sc *client.NetBox) error {
-	log.Debugf("config.go ValidateConnection() validando ")
-	rs, err := sc.Dcim.DcimRacksList(nil, nil)
-	log.Println(rs)
-	return err
+	log.Debug("Validating Netbox connection")
+
+	_, err := sc.Dcim.DcimRacksList(nil, nil)
+
+	if err != nil {
+		log.Error("Failed to validate connection to Netbox")
+	}
+
+	log.Debug("Netbox connection validated")
+
+	return nil
 }
