@@ -80,7 +80,7 @@ for the ipam ip addresses update operation typically these are written to a http
 type IPAMIPAddressesUpdateParams struct {
 
 	/*Data*/
-	Data *models.IPAddress
+	Data *models.IPAddressCreateUpdate
 	/*ID
 	  A unique integer value identifying this IP address.
 
@@ -126,13 +126,13 @@ func (o *IPAMIPAddressesUpdateParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithData adds the data to the ipam ip addresses update params
-func (o *IPAMIPAddressesUpdateParams) WithData(data *models.IPAddress) *IPAMIPAddressesUpdateParams {
+func (o *IPAMIPAddressesUpdateParams) WithData(data *models.IPAddressCreateUpdate) *IPAMIPAddressesUpdateParams {
 	o.SetData(data)
 	return o
 }
 
 // SetData adds the data to the ipam ip addresses update params
-func (o *IPAMIPAddressesUpdateParams) SetData(data *models.IPAddress) {
+func (o *IPAMIPAddressesUpdateParams) SetData(data *models.IPAddressCreateUpdate) {
 	o.Data = data
 }
 

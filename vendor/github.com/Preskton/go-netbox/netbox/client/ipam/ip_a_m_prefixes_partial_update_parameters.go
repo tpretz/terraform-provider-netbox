@@ -80,7 +80,7 @@ for the ipam prefixes partial update operation typically these are written to a 
 type IPAMPrefixesPartialUpdateParams struct {
 
 	/*Data*/
-	Data *models.Prefix
+	Data *models.PrefixCreateUpdate
 	/*ID
 	  A unique integer value identifying this prefix.
 
@@ -126,13 +126,13 @@ func (o *IPAMPrefixesPartialUpdateParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithData adds the data to the ipam prefixes partial update params
-func (o *IPAMPrefixesPartialUpdateParams) WithData(data *models.Prefix) *IPAMPrefixesPartialUpdateParams {
+func (o *IPAMPrefixesPartialUpdateParams) WithData(data *models.PrefixCreateUpdate) *IPAMPrefixesPartialUpdateParams {
 	o.SetData(data)
 	return o
 }
 
 // SetData adds the data to the ipam prefixes partial update params
-func (o *IPAMPrefixesPartialUpdateParams) SetData(data *models.Prefix) {
+func (o *IPAMPrefixesPartialUpdateParams) SetData(data *models.PrefixCreateUpdate) {
 	o.Data = data
 }
 

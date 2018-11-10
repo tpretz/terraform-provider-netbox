@@ -80,7 +80,7 @@ for the ipam ip addresses partial update operation typically these are written t
 type IPAMIPAddressesPartialUpdateParams struct {
 
 	/*Data*/
-	Data *models.IPAddress
+	Data *models.IPAddressCreateUpdate
 	/*ID
 	  A unique integer value identifying this IP address.
 
@@ -126,13 +126,13 @@ func (o *IPAMIPAddressesPartialUpdateParams) SetHTTPClient(client *http.Client) 
 }
 
 // WithData adds the data to the ipam ip addresses partial update params
-func (o *IPAMIPAddressesPartialUpdateParams) WithData(data *models.IPAddress) *IPAMIPAddressesPartialUpdateParams {
+func (o *IPAMIPAddressesPartialUpdateParams) WithData(data *models.IPAddressCreateUpdate) *IPAMIPAddressesPartialUpdateParams {
 	o.SetData(data)
 	return o
 }
 
 // SetData adds the data to the ipam ip addresses partial update params
-func (o *IPAMIPAddressesPartialUpdateParams) SetData(data *models.IPAddress) {
+func (o *IPAMIPAddressesPartialUpdateParams) SetData(data *models.IPAddressCreateUpdate) {
 	o.Data = data
 }
 

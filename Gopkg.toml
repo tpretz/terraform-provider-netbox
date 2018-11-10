@@ -20,5 +20,5 @@
   version = "1.2.0"
 
 [[constraint]]
-  branch = "master"
+  branch = "feature/nested-obj-to-id"
   name = "github.com/Preskton/go-netbox"

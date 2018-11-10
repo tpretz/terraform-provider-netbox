@@ -34,6 +34,10 @@ func resourceNetboxIpamPrefix() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 			},
+			"tenant_id": &schema.Schema{
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
 			"is_pool": &schema.Schema{
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -58,16 +62,19 @@ func resourceNetboxIpamPrefixCreate(d *schema.ResourceData, meta interface{}) er
 
 	prefix := d.Get("prefix").(string)
 	description := d.Get("description").(string)
-	//vrfID := int64(d.Get("vrf_id").(int))
+	vrfID := int64(d.Get("vrf_id").(int))
 	isPool := d.Get("is_pool").(bool)
 	//status := d.Get("status").(string)
+	tenantID := int64(d.Get("tenant_id").(int))
 
 	var parm = ipam.NewIPAMPrefixesCreateParams().WithData(
-		&models.Prefix{
+		&models.PrefixCreateUpdate{
 			Prefix:      &prefix,
 			Description: description,
 			IsPool:      isPool,
 			Tags:        []string{},
+			Vrf:         vrfID,
+			Tenant:      tenantID,
 		},
 	)
 
@@ -98,18 +105,21 @@ func resourceNetboxIpamPrefixUpdate(d *schema.ResourceData, meta interface{}) er
 
 	prefix := d.Get("prefix").(string)
 	description := d.Get("description").(string)
-	//vrfID := int64(d.Get("vrf_id").(int))
+	vrfID := int64(d.Get("vrf_id").(int))
 	isPool := d.Get("is_pool").(bool)
 	//status := d.Get("status").(string)
+	tenantID := int64(d.Get("tenant_id").(int))
 
 	var parm = ipam.NewIPAMPrefixesUpdateParams().
 		WithID(id).
 		WithData(
-			&models.Prefix{
+			&models.PrefixCreateUpdate{
 				Prefix:      &prefix,
 				Description: description,
 				IsPool:      isPool,
 				Tags:        []string{},
+				Vrf:         vrfID,
+				Tenant:      tenantID,
 			},
 		)
 
@@ -152,6 +162,12 @@ func resourceNetboxIpamPrefixRead(d *schema.ResourceData, meta interface{}) erro
 	d.Set("description", readResult.Payload.Description)
 	d.Set("vrf_id", vrfID)
 	d.Set("is_pool", readResult.Payload.IsPool)
+
+	var tenantID int64
+	if readResult.Payload.Tenant != nil {
+		tenantID = readResult.Payload.Tenant.ID
+	}
+	d.Set("tenant_id", tenantID)
 
 	return nil
 }

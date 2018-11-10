@@ -80,7 +80,7 @@ for the ipam prefixes update operation typically these are written to a http.Req
 type IPAMPrefixesUpdateParams struct {
 
 	/*Data*/
-	Data *models.Prefix
+	Data *models.PrefixCreateUpdate
 	/*ID
 	  A unique integer value identifying this prefix.
 
@@ -126,13 +126,13 @@ func (o *IPAMPrefixesUpdateParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithData adds the data to the ipam prefixes update params
-func (o *IPAMPrefixesUpdateParams) WithData(data *models.Prefix) *IPAMPrefixesUpdateParams {
+func (o *IPAMPrefixesUpdateParams) WithData(data *models.PrefixCreateUpdate) *IPAMPrefixesUpdateParams {
 	o.SetData(data)
 	return o
 }
 
 // SetData adds the data to the ipam prefixes update params
-func (o *IPAMPrefixesUpdateParams) SetData(data *models.Prefix) {
+func (o *IPAMPrefixesUpdateParams) SetData(data *models.PrefixCreateUpdate) {
 	o.Data = data
 }
 

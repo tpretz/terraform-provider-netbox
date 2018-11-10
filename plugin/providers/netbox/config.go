@@ -76,8 +76,8 @@ func (c *Config) Client() (interface{}, error) {
 	runtimeClient := openapi_runtimeclient.New(parsedURI.Host, client.DefaultBasePath, desiredRuntimeClientSchemes)
 
 	runtimeClient.DefaultAuthentication = openapi_runtimeclient.APIKeyAuth("Authorization", "header", fmt.Sprintf("Token %v", cfg.AppID))
-	runtimeClient.SetLogger(&log.Logger{})
-	runtimeClient.SetDebug(true)
+	runtimeClient.SetLogger(log.StandardLogger())
+
 	netboxClient := client.New(runtimeClient, strfmt.Default)
 
 	// Validate that our connection is okay

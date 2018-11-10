@@ -80,7 +80,7 @@ for the ipam vrfs partial update operation typically these are written to a http
 type IPAMVrfsPartialUpdateParams struct {
 
 	/*Data*/
-	Data *models.VRF
+	Data *models.VRFCreateUpdate
 	/*ID
 	  A unique integer value identifying this VRF.
 
@@ -126,13 +126,13 @@ func (o *IPAMVrfsPartialUpdateParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithData adds the data to the ipam vrfs partial update params
-func (o *IPAMVrfsPartialUpdateParams) WithData(data *models.VRF) *IPAMVrfsPartialUpdateParams {
+func (o *IPAMVrfsPartialUpdateParams) WithData(data *models.VRFCreateUpdate) *IPAMVrfsPartialUpdateParams {
 	o.SetData(data)
 	return o
 }
 
 // SetData adds the data to the ipam vrfs partial update params
-func (o *IPAMVrfsPartialUpdateParams) SetData(data *models.VRF) {
+func (o *IPAMVrfsPartialUpdateParams) SetData(data *models.VRFCreateUpdate) {
 	o.Data = data
 }
 

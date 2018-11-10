@@ -43,6 +43,10 @@ func resourceNetboxIpamVrfDomain() *schema.Resource {
 				Type:     schema.TypeInt,
 				Computed: true,
 			},
+			"tenant_id": &schema.Schema{
+				Type:     schema.TypeInt,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -55,13 +59,15 @@ func resourceNetboxIpamVrfDomainCreate(d *schema.ResourceData, meta interface{})
 	routeDistinguisher := d.Get("route_distinguisher").(string)
 	enforceUnique := d.Get("enforce_unique").(bool)
 	description := d.Get("description").(string)
+	tenantID := int64(d.Get("tenant_id").(int))
 
 	var parm = ipam.NewIPAMVrfsCreateParams().WithData(
-		&models.VRF{
+		&models.VRFCreateUpdate{
 			Rd:            &routeDistinguisher,
 			Name:          &name,
 			Description:   description,
 			EnforceUnique: enforceUnique,
+			Tenant:        tenantID,
 			Tags:          []string{},
 		},
 	)
@@ -95,15 +101,17 @@ func resourceNetboxIpamVrfDomainUpdate(d *schema.ResourceData, meta interface{})
 	routeDistinguisher := d.Get("route_distinguisher").(string)
 	enforceUnique := d.Get("enforce_unique").(bool)
 	description := d.Get("description").(string)
+	tenantID := int64(d.Get("tenant_id").(int))
 
 	var parm = ipam.NewIPAMVrfsUpdateParams().
 		WithID(id).
 		WithData(
-			&models.VRF{
+			&models.VRFCreateUpdate{
 				Rd:            &routeDistinguisher,
 				Name:          &name,
 				Description:   description,
 				EnforceUnique: enforceUnique,
+				Tenant:        tenantID,
 				Tags:          []string{},
 			},
 		)
@@ -142,6 +150,12 @@ func resourceNetboxIpamVrfDomainRead(d *schema.ResourceData, meta interface{}) e
 	d.Set("route_distinguisher", readResult.Payload.Rd)
 	d.Set("enforce_unique", readResult.Payload.EnforceUnique)
 	d.Set("description", readResult.Payload.Description)
+
+	var tenantID int64
+	if readResult.Payload.Tenant != nil {
+		tenantID = readResult.Payload.Tenant.ID
+	}
+	d.Set("tenant_id", tenantID)
 
 	return nil
 }

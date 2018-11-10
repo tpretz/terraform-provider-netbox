@@ -58,12 +58,10 @@ func resourceNetboxIpamAggregateCreate(d *schema.ResourceData, meta interface{})
 	// TODO dateAdded
 
 	var parm = ipam.NewIPAMAggregatesCreateParams().WithData(
-		&models.Aggregate{
+		&models.AggregateCreateUpdate{
 			Prefix:      &prefix,
 			Description: description,
-			Rir: &models.NestedRIR{
-				ID: rirID,
-			},
+			Rir:         &rirID,
 			// TODO DateAdded
 		},
 	)
@@ -103,12 +101,10 @@ func resourceNetboxIpamAggregateUpdate(d *schema.ResourceData, meta interface{})
 	// TODO dateAdded
 
 	var parm = ipam.NewIPAMAggregatesUpdateParams().WithID(int64(id)).WithData(
-		&models.Aggregate{
+		&models.AggregateCreateUpdate{
 			Prefix:      &prefix,
 			Description: description,
-			Rir: &models.NestedRIR{
-				ID: rirID,
-			},
+			Rir:         &rirID,
 			// TODO DateAdded
 		},
 	)

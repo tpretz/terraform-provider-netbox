@@ -17,6 +17,8 @@ test.tf
 .terraform
 *.tfstate
 *.tfstate.backup
+terraform.tfstate.*.backup
 .tmp/
 
 pkg/
+temp/
