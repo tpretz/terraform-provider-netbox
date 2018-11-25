@@ -56,12 +56,14 @@ func resourceNetboxIpamAggregateCreate(d *schema.ResourceData, meta interface{})
 	rirID := int64(d.Get("rir_id").(int))
 	description := d.Get("description").(string)
 	// TODO dateAdded
+	tags := []string{}
 
 	var parm = ipam.NewIPAMAggregatesCreateParams().WithData(
 		&models.AggregateCreateUpdate{
 			Prefix:      &prefix,
 			Description: description,
 			Rir:         &rirID,
+			Tags:        tags,
 			// TODO DateAdded
 		},
 	)
@@ -99,12 +101,14 @@ func resourceNetboxIpamAggregateUpdate(d *schema.ResourceData, meta interface{})
 	rirID := int64(d.Get("rir_id").(int))
 	description := d.Get("description").(string)
 	// TODO dateAdded
+	tags := []string{}
 
 	var parm = ipam.NewIPAMAggregatesUpdateParams().WithID(int64(id)).WithData(
 		&models.AggregateCreateUpdate{
 			Prefix:      &prefix,
 			Description: description,
 			Rir:         &rirID,
+			Tags:        tags,
 			// TODO DateAdded
 		},
 	)

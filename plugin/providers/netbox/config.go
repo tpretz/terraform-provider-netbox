@@ -80,38 +80,10 @@ func (c *Config) Client() (interface{}, error) {
 
 	netboxClient := client.New(runtimeClient, strfmt.Default)
 
-	// Validate that our connection is okay
-	if err := c.ValidateConnection(netboxClient); err != nil {
-		log.WithFields(
-			log.Fields{
-				"uri":   cfg.Endpoint,
-				"error": err,
-			},
-		).Error("Failed to validate connection")
-
-		return nil, err
-	}
-
 	terraformNetboxClient := ProviderNetboxClient{
 		client:        netboxClient,
 		configuration: cfg,
 	}
 
 	return &terraformNetboxClient, nil
-}
-
-// ValidateConnection ensures that we can connect to Netbox early, so that we
-// do not fail in the middle of a TF run if it can be prevented.
-func (c *Config) ValidateConnection(sc *client.NetBox) error {
-	log.Debug("Validating Netbox connection")
-
-	_, err := sc.Dcim.DcimRacksList(nil, nil)
-
-	if err != nil {
-		log.Error("Failed to validate connection to Netbox")
-	}
-
-	log.Debug("Netbox connection validated")
-
-	return nil
 }
