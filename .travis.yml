@@ -21,3 +21,15 @@ install: true
 # Don't email me the results of the test runs.
 notifications:
   email: false
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "m6E1V0Ey9z/vVbsVZIjSSY14aJQwEvylAhok9EuiLCot41z90L9gyyArm1Z5xQm+5m92O/GG0CMTQqpO7xM3O8kT0hMXAOBlMu9ZlsmcjgIAc4aR8g+u7eh93rmKC0pcdYzcjvnyPhWzlxI05d9jwn+XBV1sMjLC4tisYgdPSIHgBUwT4pstRuJEpHgDTIM394VmEKvX90W9ShDau5rOuMIwGRrKT2wJmAjETYeyGbaybI1Zsr0BcDYhe8XNfAnb6SGpj+/19UmPAdqEmWO/v8SQeqz43fqxBqSrSIeMvdolx61t4Fqe4fszXEMZ3bIjhPlsJP9DFB49/2S1XxrbGCIBgKxMGuOyHhAV7m/uszcBpNMEOyc9Za6W4tJ5YAzUpE8Ko7z7Fxg1YtbuxKGcA2p9BDev4Cz4oJkTfzQWAjlTleW/O1qVo2D6YPX19q0HdRPRGTDFkxiBbSY20lc8WzPN1a1ArcCkiOleIC07/xqkR1mpzhLBIcbOaVqn7ArHgHs4AttIKkD7S+S8KDistRWcI8AoAro705PVE8Mq6un6PeePCk2aAqgQQDjKrRwzXjyQUTj8eGoiFfJkPtiEsuykiKPhSO2po3hRHsswXB1IW9+Be43Kczn8DHakjdisBVfWh+9t5uMwuYz2jnTLYqHN3XIoDXJUF7jw5Jxeo9E="
+  file:
+    - pkg/darwin_amd64/terraform-provider-netbox
+    - pkg/linux_amd64/terraform-provider-netbox
+    - pkg/windows_amd64/terraform-provider-netbox.exe
+  skip_cleanup: true
+  on:
+    tags: true
