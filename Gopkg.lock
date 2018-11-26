@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  branch = "feature/nested-obj-to-id"
+  branch = "master"
   digest = "1:fb7338f723041d83e35ffba5583a9f1eb04fd72c339657ddfb552661e69a3d2d"
   name = "github.com/Preskton/go-netbox"
   packages = [
@@ -17,7 +17,7 @@
     "netbox/models",
   ]
   pruneopts = "UT"
-  revision = "50609ec28b7a5c40a23e20df02bf40df8eb57095"
+  revision = "4b9e0c3eaf779aec03ee46ccaa9e64f18c3d265a"
 
 [[projects]]
   digest = "1:d1665c44bd5db19aaee18d1b6233c99b0b9a986e8bccb24ef54747547a48027f"
