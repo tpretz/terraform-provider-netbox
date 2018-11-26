@@ -30,6 +30,7 @@ deploy:
   file:
     - pkg/**/*
   skip_cleanup: true
+  name: $TRAVIS_TAG
   on:
     tags: true
   draft: true
