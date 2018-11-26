@@ -1,180 +1,150 @@
+[![Build Status](https://travis-ci.com/Preskton/terraform-provider-netbox.svg?branch=master)](https://travis-ci.com/Preskton/terraform-provider-netbox) [![GitHub license](https://img.shields.io/github/license/Preskton/terraform-provider-netbox.svg)](https://github.com/Preskton/terraform-provider-netbox/blob/master/LICENSE) [![GitHub release](https://img.shields.io/github/release/Preskton/terraform-provider-netbox.svg)](https://github.com/Preskton/terraform-provider-netbox/releases/)
+
 # Terraform Provider Plugin for Netbox
 
-This repository holds a external plugin for a [Terraform][1] provider to manage
-resources within [Netbox][2], an open source IP address management system. Using
-the go API client for DigitalOcean's NetBox IPAM and DCIM service [Go-Netbox][3].
-
-Good example: [Example][4]
+This repository holds a external plugin for a [Terraform][1] provider to manage resources within DigitalOcean's [Netbox][2] by way of the the golang API client for Netbox, [go-netbox][3].
 
 [1]: https://www.terraform.io/
 [2]: https://github.com/digitalocean/netbox
-[3]: https://github.com/digitalocean/go-netbox
-[4]: http://techblog.d2-si.eu/2018/02/23/my-first-terraform-provider.html
+[3]: https://github.com/Preskton/go-netbox
 
 ## About Netbox
 
-[Netbox][2] is an open source IP address management system written in Python. Through our Go integration provided by [Go-Netbox[3]], we will integrate it into
-[Terraform][1], allowing for the management and lookup of sections, VLANs, subnets and IP addresses, entirely withing Terraform.
-
+[Netbox][2] is an IP address management (IPAM) and data center infrastructure management (DCIM) created by DigitalOcean. By leveraging the work at [go-netbox][3], 
+`terraform-provider-netbox` allows you to declaratively describe your infrastructure using HCL to keep track of your infrastructure. The real value of this
+solution comes through when you combine it with your other Terraform providers to store information like cloud provider-assigned networks and IPs.
 
 ## Installing
 
-See the [Plugin Basics][5] page of the Terraform docs to see how to plunk this
-into your config. Check the [releases page][6] of this repo to get releases for
-Linux, OS X, and Windows.
+See the [Plugin Basics][5] page of the Terraform docs to see how to install this plugin. Check the [releases page][6] to download binaries for
+Linux, OS X, and Windows. You'll need to remove the OS & processor architecture from the file name for Terraform to recognize the plugin. Ex: if you are using
+the `linux-amd64-terraform-provider-netbox`, you'd rename the file to `terraform-provider-netbox`.
 
 [5]: https://www.terraform.io/docs/plugins/basics.html
-[6]: https://github.com/limberger/terraform-provider-netbox/releases
+[6]: https://github.com/Preskton/terraform-provider-netbox/releases
 
 ## Usage
 
-After installation, to use the plugin, simply use any of its resources or data
-sources (such as `netbox_prefixes`, `netbox_vlans` or `netbox_prefixes_available_ips` in a Terraform
-configuration.
+Add the `netbox` provider to your `tf` file like so:
 
-Credentials can be supplied via configuration variables to the `netbox`
-provider instance, or via environment variables. These are documented in the
-next section.
-
-You can see the following example below for a simple usage example that reserves
-the first available IP address in a subnet. This address could then be passed
-along to the configuration for a VM, say, for example, a
-[`vsphere_virtual_machine`][7] resource.
-
-[7]: https://www.terraform.io/docs/providers/vsphere/r/virtual_machine.html
-
-```
+```hcl
 provider "netbox" {
-  app_id = "0123456789abcdef0123456789abcdef01234567"
-  endpoint = "0.0.0.0:32768"
-}
-
-data "netbox_prefixes" "prefixes" {
-  prefixes_id = 1
-}
-
-resource "netbox_prefixes_available_ips" "next_address" {
-	prefixes_id = "${data.netbox_prefixes.prefixes.prefixes_id}"
-	description = "IP requisitado via Terraform 20180827"
+    app_id = "abcdef12345678900987654321fedcba"
+    endpoint = "https://netbox.tonikensa.splatnet"
 }
 ```
 
-### Plugin Options
+Where `app_id` is a Netbox token created in the Netbox Admin portal (click your username in the top right -> Admin -> Tokens) and `endpoint` is a URI to your Netbox instance (do not include `/api`).
 
-The options for the plugin are as follows:
+Once configured, you can use any of the following resources:
 
- * `app_id` - The API application ID, configured in the NETBOX  panel. This
-   application ID should have read/write access if you are planning to use the
-   resources, but read-only access should be sufficient if you are only using
-   the data sources. Caan also be supplied by the `NETBOX_APP_ID` environment
-   variable.
- * `endpoint` - The server, protocol and port to access the NETBOX API, such as
-   `https://netbox.example.com/api`. Can also be supplied by the
-   `NETBOX_ENDPOINT_ADDR` environment variable.
+- IPAM Resources:
+  - `netbox_ipam_rir` - regional internet registries
+  - `netbox_ipam_vrf` - virtual routing & forwarding groups
+  - `netbox_ipam_aggregate` - top level aggregates
+  - `netbox_ipam_prefix` - subnet prefixes
+  - `netbox_ipam_ip_address` - specific IP addresses
+- Organization Resources:
+  - `netbox_org_tenant_group` - tenant groups
+  - `netbox_org_tenant` - tenants
 
-### Data Sources
+## Annotated Example
 
-The following data sources are supplied by this plugin:
+The following is an example that exercises the currently available functionality:
 
-#### The `netbox_prefixes` Data Source
+```hcl
+provider "netbox" {
+    app_id = "abcdef12345678900987654321fedcba"
+    endpoint = "https://netbox.tonikensa.splatnet"
+}
 
-The `netbox_prefixes` cadastred on netbox
+// Creates a tenant group we can place our tenants in
+resource "netbox_org_tenant_group" "splatoon" {
+    name = "Splatoon Tenants"
+    slug = "splatoon"
+}
 
-**Example:**
+// Creates a tenant that we can later assign things like circuits, racks, and IPs to (once we build those providers, ha)
+resource "netbox_org_tenant" "squid-kids" {
+    name = "Squid Kids"
+    slug = "squid-kids"
+    description = "Squid kids only."
+    comments = "This tenant reserved for squid kids only. Should NOT be used for Octolings."
+    // Use the tenant group we just made
+    tenant_group_id = "${netbox_org_tenant_group.splatoon.tenant_group_id}"
+}
 
-```
-data "netbox_prefixes" "prefixes" {
-  prefixes_id = 1
+// Creates a regional internet registry that is responsible for managing the various addresses we'll be registering
+resource "netbox_ipam_rir" "squidland" {
+    name = "Squidland IP Addressing Protectorate"
+    slug = "squidland"
+    is_private = "true"
+}
+
+// Creates a Virtual Routing & Forwarding domain
+resource "netbox_ipam_vrf" "toni-kensa-west" {
+    name = "Toni Kensa GmbH Private Networks"
+    route_distinguisher = "toni-kensa-west"
+    // Forces all prefixes and IPs to be non-overlapping and unique
+    enforce_unique = true
+}
+
+// Creates a top level aggregate in which underlying prefixes and IPs will live
+resource "netbox_ipam_aggregate" "splatnet" {
+    prefix = "192.168.0.0/16"
+    description = "Squidland Splatnet"
+    // Use the RIR we created earlier
+    rir_id = "${netbox_ipam_rir.squidland.rir_id}"
+}
+
+// Creates a subnet prefix
+resource "netbox_ipam_prefix" "toni-kensa-west-primary" {
+    prefix = "192.168.100.0/24"
+    description = "Toni Kensa West - Primary Network"
+    // Use the VRF we just created
+    vrf_id = "${netbox_ipam_vrf.toni-kensa-west.vrf_id}"
+    is_pool = true    
+}
+
+// Creates another subnet prefix
+resource "netbox_ipam_prefix" "toni-kensa-west-secondary" {
+    prefix = "192.168.101.0/24"
+    description = "Toni Kensa West - Secondary Network"
+    vrf_id = "${netbox_ipam_vrf.toni-kensa-west.vrf_id}"
+    is_pool = true    
+}
+
+// Creates an internal IP address that is "active" (status 1)
+resource "netbox_ipam_ip_address" "toni-kensa-west-primary-router" {
+    // Still use full CIDR notation for IPs!
+    address = "192.168.100.1/32"
+    description = "Toni Kensa West Primary Router"
+    // Use the VRF from above
+    vrf_id = "${netbox_ipam_vrf.toni-kensa-west.vrf_id}"
+    // Use the tenant from above
+    tenant_id = "${netbox_org_tenant.squid-kids.tenant_id}"
+    // Sorry not quite using the names yet - you've got to reference the ID!
+    // for IPAM resources, these are available at https://your-netbox/api/ipam/_choices
+    status = 1
+}
+
+// Creates an "outside" IP address that we NAT our previous internal IP through
+resource "netbox_ipam_ip_address" "toni-kensa-west-primary-external" {
+    address = "3.3.3.3/32"
+    description = "Toni Kensa West Primary External IP"
+    vrf_id = "${netbox_ipam_vrf.toni-kensa-west.vrf_id}"
+    tenant_id = "${netbox_org_tenant.squid-kids.tenant_id}"
+    status = 1
+    // This IP (3.3.3.3) NATs for the IP specified here (192.168.100.1)
+    nat_inside_ip_address_id = "${netbox_ipam_ip_address.toni-kensa-west-primary-router.ip_address_id}"
 }
 ```
 
-**Example With `description`:**
-
-```
-data "netbox_prefixes" "prefixes" {
-  prefixes_id = 1
-}
-
-output "prefix_description" {
-  value = "${data.netbox_prefixes.prefixes.description}"
-}
-```
-
-**Example With `vlan id - vid`:**
-
-```
-data "netbox_prefix" "search_by_vid" {
-  vlan = {
-    vid = 16
-  }
-}
-
-output "vlan_description" {
-  value = "${data.netbox_prefixes.search_by_vid.name}"
-}
-```
-
-##### Argument Reference
-
-The data source takes the following parameters:
-
- * `address_id` - The ID of the IP address in the NETBOX database.
- * `description` - The description of the IP address. `subnet_id` is required
-   when using this field.
-
-⚠️  **NOTE:** `description`, `hostname`, and `custom_field_filter` fields return
-the first match found without any warnings.
-
-⚠️  **NOTE:** An empty or unspecified `custom_field_filter` value is the
-equivalent to a regular expression that matches everything, and hence will
-return the first address it sees in the subnet.
-
-Arguments are processed in the following order of precedence:
-
- * `address_id`
- * `ip_address`
- * `subnet_id`, and either one of `description`, `hostname`, or
-   `custom_field_filter`
-
-##### Attribute Reference
-
-The following attributes are exported:
-
- * `description` - The description provided to this IP address.
-
-
-#### The `netbox_vlans` Data Source
-
-The `netbox_vlans` data source allows you to search for vlans_by_id
-
-**Example:**
-
-```
-data "netbox_vlans" "search_by_vid" {
-  vid = 16
-}
-
-output "vlans_description" {
-  value = "${data.netbox_vlans.search_by_vid.description}"
-}
-```
-
-```
-data "netbox_vlans" "search_by_name" {
-  name = "Vlan16"
-}
-
-output "vlans_description" {
-  value = "${data.netbox_vlans.search_by_name.description}"
-}
-```
-
-#### End
-
-
+## Copyright Notice
 
 ```
 Copyright 2018 BB, Inc.
+Portions copyright 2018 Preston Doster.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
