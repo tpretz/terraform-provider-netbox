@@ -26,10 +26,9 @@ deploy:
   provider: releases
   api_key:
     secure: "rr74GpHXcXRu6PdwQRfnIbqTQnHA4d8DDZGGZwuZAOEOA2Oks/l2hMnnm6xnaM2FGQJ/CuT25lol+IZvO6JWNth4DWburjVYzigu6NGvFLTxP2KBqT0WF56YZAlnm7A7lcKPPv8mSCINBQvgyw9mACdAfa8u+72weBbJZbjY8gELO6Z5OmoieE4Lzs+F1vLaitVYOseFqeifnv+O4JU0zThE19yG7N2Ywe4qsMIXhcbYuc4ju8liGgl+CkEH1ty+NvaMoqlDJUo4BS7ru19MeZ6F4jF+4YAcmdMM6bm72tz9S+UW+3yv7mvA9MsItARcOu1fXvOFeSbLjupizJFamqSPwzghIN4ia7yD2Jmd9rLDz94oNYKzSEKHL8I5qXJt6HxUchHhnb/P75zw2Me1CKcjfc5mBGchR8q7O6TQhxIoie4XdrLhwHQcCXLxvgd4lhPfQ0h0yHcYm+Fg8hEvhg54yo2a9F+6VdT+53HoCeucsA+lN79HgCVvhbFdmTiHxvJOo9wfmuKgk1v0pRW3CiFpbN5gjS6caeW2oJX5xAqkvVq7eIsPyd14TYtbqAXz5pnJEX+5wjS5vDRmz8kn49U9i2qIbjTJGM6bt/5rKD1coBQ/9DaLrvyYWL1xW4/5zL9Ybhgb1UqrwHG5i7Jrsp/ANqyCzHLjsjE1pMmNzKw="
+  file_glob: true
   file:
-    - pkg/darwin_amd64/terraform-provider-netbox
-    - pkg/linux_amd64/terraform-provider-netbox
-    - pkg/windows_amd64/terraform-provider-netbox.exe
+    - pkg/**/*
   skip_cleanup: true
   on:
     tags: true
