@@ -23,13 +23,13 @@ func providerSchema() map[string]*schema.Schema {
 		"app_id": &schema.Schema{
 			Type:        schema.TypeString,
 			Optional:    true,
-			Default:     "",
+      DefaultFunc: schema.EnvDefaultFunc("NETBOX_APP_ID", nil),
 			Description: "API key used to access Netbox, generated under Admin -> Users -> Tokens and assigned to a user",
 		},
 		"endpoint": &schema.Schema{
 			Type:        schema.TypeString,
 			Optional:    true,
-			Default:     "",
+      DefaultFunc: schema.EnvDefaultFunc("NETBOX_ENDPOINT_ADDR", nil),
 			Description: "Endpoint of your Netbox instance",
 		},
 		/*
