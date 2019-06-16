@@ -76,6 +76,11 @@ func dataSourceNetboxPrefixesRead(d *schema.ResourceData, meta interface{}) erro
       param.SetQ(&query_str)
     }
 
+    if within, withinOk := d.GetOk("within"); withinOk {
+      within_str := within.(string)
+      param.SetWithin(&within_str)
+    }
+
     if tenant, tenantOk := d.GetOk("tenant"); tenantOk {
       tenant_str := dataSourceNetboxPrefixAttrPrep(tenant.(string))
       param.SetTenant(&tenant_str)
@@ -156,6 +161,10 @@ func barePrefixesSchema() map[string]*schema.Schema {
       Optional: true,
 		},
 		"role": &schema.Schema{
+			Type: schema.TypeString,
+      Optional: true,
+		},
+		"within": &schema.Schema{
 			Type: schema.TypeString,
       Optional: true,
 		},
