@@ -57,9 +57,30 @@ func dataSourceNetboxPrefixesRead(d *schema.ResourceData, meta interface{}) erro
     param := ipam.NewIPAMPrefixesListParams()
 
     // Add any lookup params
+
     if vid, vidOk := d.GetOk("vlan_vid"); vidOk {
       vlan_vid := float64(vid.(int))
       param.SetVlanVid(&vlan_vid)
+    }
+
+    if query, queryOk := d.GetOk("query"); queryOk {
+      query_str := query.(string)
+      param.SetQ(&query_str)
+    }
+
+    if tenant, tenantOk := d.GetOk("tenant"); tenantOk {
+      tenant_str := tenant.(string)
+      param.SetTenant(&tenant_str)
+    }
+
+    if site, siteOk := d.GetOk("site"); siteOk {
+      site_str := site.(string)
+      param.SetSite(&site_str)
+    }
+
+    if role, roleOk := d.GetOk("role"); roleOk {
+      role_str := role.(string)
+      param.SetRole(&role_str)
     }
 
     // limit to 2
@@ -113,6 +134,22 @@ func barePrefixesSchema() map[string]*schema.Schema {
 		},
 		"vlan_vid": &schema.Schema{
 			Type: schema.TypeInt,
+		},
+		"query": &schema.Schema{
+			Type: schema.TypeString,
+      Optional: true,
+		},
+		"tenant": &schema.Schema{
+			Type: schema.TypeString,
+      Optional: true,
+		},
+		"site": &schema.Schema{
+			Type: schema.TypeString,
+      Optional: true,
+		},
+		"role": &schema.Schema{
+			Type: schema.TypeString,
+      Optional: true,
 		},
 	}
 }
