@@ -81,6 +81,11 @@ func dataSourceNetboxPrefixesRead(d *schema.ResourceData, meta interface{}) erro
       param.SetWithin(&within_str)
     }
 
+    if family, familyOk := d.GetOk("family"); familyOk {
+      family_str := family.(string)
+      param.SetFamily(&family_str)
+    }
+
     if tenant, tenantOk := d.GetOk("tenant"); tenantOk {
       tenant_str := dataSourceNetboxPrefixAttrPrep(tenant.(string))
       param.SetTenant(&tenant_str)
@@ -216,6 +221,8 @@ func dataSourcePrefixesSchema() map[string]*schema.Schema {
 		case "vlan_vid":
 			v.Optional = true
 		case "prefix":
+			v.Optional = true
+		case "family":
 			v.Optional = true
 		case "created":
 			v.Optional = true
