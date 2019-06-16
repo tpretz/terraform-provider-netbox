@@ -5,6 +5,7 @@ import (
 	//"fmt"
 	"log"
 	"strconv"
+  "strings"
 
 	// "errors"
 
@@ -34,6 +35,13 @@ func dataSourceNetboxPrefixParse(d *schema.ResourceData, obj *models.Prefix) {
   }
 
   log.Printf("Finished parsing results from IPAMPrefixesRead")
+}
+
+func dataSourceNetboxPrefixAttrPrep(in string) (out string) {
+  lowerstr := strings.ToLower(in)
+  out = strings.Replace(lowerstr, " ", "-", -1)
+
+  return
 }
 
 // Read will fetch the data of a resource.
@@ -69,17 +77,17 @@ func dataSourceNetboxPrefixesRead(d *schema.ResourceData, meta interface{}) erro
     }
 
     if tenant, tenantOk := d.GetOk("tenant"); tenantOk {
-      tenant_str := tenant.(string)
+      tenant_str := dataSourceNetboxPrefixAttrPrep(tenant.(string))
       param.SetTenant(&tenant_str)
     }
 
     if site, siteOk := d.GetOk("site"); siteOk {
-      site_str := site.(string)
+      site_str := dataSourceNetboxPrefixAttrPrep(site.(string))
       param.SetSite(&site_str)
     }
 
     if role, roleOk := d.GetOk("role"); roleOk {
-      role_str := role.(string)
+      role_str := dataSourceNetboxPrefixAttrPrep(role.(string))
       param.SetRole(&role_str)
     }
 
