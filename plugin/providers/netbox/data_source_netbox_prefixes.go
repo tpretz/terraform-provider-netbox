@@ -2,13 +2,14 @@ package netbox
 
 import (
 	"errors"
-	"fmt"
+	//"fmt"
 	"log"
 	"strconv"
 
 	// "errors"
 
 	"github.com/Preskton/go-netbox/netbox/client/ipam"
+	"github.com/Preskton/go-netbox/netbox/models"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
@@ -19,80 +20,67 @@ func dataSourceNetboxPrefixes() *schema.Resource {
 	}
 }
 
+func dataSourceNetboxPrefixParse(d *schema.ResourceData, obj *models.Prefix) {
+  d.SetId(strconv.FormatInt(obj.ID, 10))
+  d.Set("created", obj.Created.String())
+  d.Set("description", obj.Description)
+  d.Set("family", obj.Family)
+  d.Set("is_pool", obj.IsPool)
+  d.Set("prefix", obj.Prefix)
+  d.Set("last_updated", obj.LastUpdated)
+
+  if obj.Vlan != nil {
+    d.Set("vlan_vid", *obj.Vlan.Vid)
+  }
+
+  log.Printf("Finished parsing results from IPAMPrefixesRead")
+}
+
 // Read will fetch the data of a resource.
 func dataSourceNetboxPrefixesRead(d *schema.ResourceData, meta interface{}) error {
-	//out := ipam.NewIPAMPrefixesListParams()
-	log.Printf("data_source_netbox_prefixes.go dataSourceNetboxPrefixesRead ............ ")
-	switch {
-	// Pega por prefix_id
-	case d.Get("prefixes_id").(int) != 0:
-		var parm = ipam.NewIPAMPrefixesReadParams()
-		parm.SetID(int64(d.Get("prefixes_id").(int)))
-		//(&&meta).IPAM.IPAMPrefixesRead(parm,nil)
+  c := meta.(*ProviderNetboxClient).client
 
-		c := meta.(*ProviderNetboxClient).client
-		log.Printf("Obtive o client\n")
-		//parms = ipam.NewIPAMPrefixesListParams()
+  // primary key lookup, direct
+  if id, idOk := d.GetOk("prefixes_id"); idOk {
+    parm := ipam.NewIPAMPrefixesReadParams()
+		parm.SetID(int64(id.(int)))
+
 		out, err := c.IPAM.IPAMPrefixesRead(parm, nil)
-		log.Printf("- Executado...\n")
-		if err == nil {
 
-			log.Printf("IPAMPrefixesRead successful: parsing results: %v", out.Error())
-
-			d.SetId(strconv.FormatInt(out.Payload.ID, 10)) // Sempre setar o ID
-			d.Set("created", out.Payload.Created.String())
-			d.Set("description", out.Payload.Description)
-			d.Set("family", out.Payload.Family)
-			d.Set("is_pool", out.Payload.IsPool)
-			d.Set("prefix", out.Payload.Prefix)
-			d.Set("last_updated", out.Payload.LastUpdated)
-
-			if out.Payload.Vlan != nil {
-				d.Set("vlan_vid", *out.Payload.Vlan.Vid)
-			}
-
-			log.Printf("Finished parsing results from IPAMPrefixesRead")
-		} else {
-			log.Printf("erro na chamada do IPAMPrefixesList\n")
-			log.Printf("Err: %v\n", err)
-			log.Print("\n")
+		if err != nil {
+      log.Printf("error from IPAMPrefixesRead: %v\n", err)
 			return err
-		}
-		// Pega por prefix.vlan.vid
-	case d.Get("vlan_vid").(int) != 0:
-		var parml = ipam.NewIPAMPrefixesListParams()
-		vlan_vid := float64(d.Get("vlan_vid").(int))
-		parml.SetVlanVid(&vlan_vid)
-		c := meta.(*ProviderNetboxClient).client
-		out, err := c.IPAM.IPAMPrefixesList(parml, nil)
-		if err == nil {
-			if *out.Payload.Count == 0 {
-				return errors.New("Prefix not found")
-			} else if *out.Payload.Count > 1 {
-				return errors.New(fmt.Sprintf("More than one Prefix found with vid %v\n", d.Get("vlanvid").(int)))
-			}
-			result := out.Payload.Results[0]
-			d.SetId(strconv.FormatInt(result.ID, 10)) // Sempre setar o ID
-			d.Set("created", result.Created.String())
-			d.Set("custom_fields", result.CustomFields)
-			d.Set("description", result.Description)
-			d.Set("family", result.Family)
-			d.Set("is_pool", result.IsPool)
-			d.Set("prefix", result.Prefix)
-			d.Set("last_updated", result.LastUpdated)
-			d.Set("vlan_Vid", *result.Vlan.Vid)
-			log.Print("\n")
-		} else {
-			log.Printf("erro na chamada do IPAMPrefixesList\n")
-			log.Printf("Err: %v\n", err)
-			log.Print("\n")
-			return err
-		}
-	default:
-		return errors.New("No valid combination of parameters found - prefix_id or vlan_vid")
-	}
+    }
 
-	log.Printf("Exiting dataSourceNetboxPrefixesRead")
+    dataSourceNetboxPrefixParse(d, out.Payload)
+  } else { // anything else, requires a search
+    param := ipam.NewIPAMPrefixesListParams()
+
+    // Add any lookup params
+    if vid, vidOk := d.GetOk("vlan_vid"); vidOk {
+      vlan_vid := float64(vid.(int))
+      param.SetVlanVid(&vlan_vid)
+    }
+
+    // limit to 2
+    limit := int64(2)
+    param.SetLimit(&limit)
+
+		out, err := c.IPAM.IPAMPrefixesList(param, nil)
+
+		if err != nil {
+      log.Printf("error from IPAMPrefixesList: %v\n", err)
+			return err
+    }
+
+    if *out.Payload.Count == 0 {
+			return errors.New("Prefix not found")
+    } else if *out.Payload.Count > 1 {
+      return errors.New("More than one prefix matches search terms, please narrow")
+    }
+
+    dataSourceNetboxPrefixParse(d, out.Payload.Results[0])
+  }
 
 	return nil
 }
