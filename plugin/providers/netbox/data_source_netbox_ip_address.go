@@ -25,13 +25,22 @@ func dataSourceNetboxIPAddressParse(d *schema.ResourceData, obj *models.IPAddres
   d.SetId(strconv.FormatInt(obj.ID, 10))
   d.Set("created", obj.Created.String())
   d.Set("description", obj.Description)
-  d.Set("family", obj.Family)
+  d.Set("status", *obj.Status.Label)
+  d.Set("family", *obj.Family.Label)
   d.Set("address", *obj.Address)
   d.Set("last_updated", obj.LastUpdated)
-  // status
-  // vrf
-  // role
-  // tenant
+
+  if obj.Vrf != nil {
+    d.Set("vrf", *obj.Vrf.Name)
+  }
+
+  if obj.Role != nil {
+    d.Set("role", *obj.Role.Label)
+  }
+
+  if obj.Tenant != nil {
+    d.Set("tenant", *obj.Tenant.Name)
+  }
 
   // interface ?
 
@@ -92,10 +101,10 @@ func dataSourceNetboxIPAddressesRead(d *schema.ResourceData, meta interface{}) e
     //  param.SetSite(&site_str)
     //}
 
-    if role, roleOk := d.GetOk("role"); roleOk {
-      role_str := dataSourceNetboxIPAddressAttrPrep(role.(string))
-      param.SetRole(&role_str)
-    }
+    //if role, roleOk := d.GetOk("role"); roleOk {
+    //  role_str := dataSourceNetboxIPAddressAttrPrep(role.(string))
+    //  param.SetRole(&role_str)
+    //}
 
     // limit to 2
     limit := int64(2)
