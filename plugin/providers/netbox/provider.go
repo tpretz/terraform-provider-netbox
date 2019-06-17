@@ -62,6 +62,7 @@ func providerDataSourcesMap() map[string]*schema.Resource {
 	return map[string]*schema.Resource{
 		"netbox_vlans":    dataSourceNetboxVlans(),
 		"netbox_prefixes": dataSourceNetboxPrefixes(),
+		"netbox_ip_address": dataSourceNetboxIPAddress(),
 	}
 }
 
