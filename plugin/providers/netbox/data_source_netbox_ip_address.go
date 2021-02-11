@@ -9,8 +9,8 @@ import (
 
 	// "errors"
 
-	"github.com/Preskton/go-netbox/netbox/client/ipam"
-	"github.com/Preskton/go-netbox/netbox/models"
+	"github.com/tpretz/go-netbox/netbox/client/ipam"
+	"github.com/tpretz/go-netbox/netbox/models"
 	"github.com/hashicorp/terraform/helper/schema"
 )
 
